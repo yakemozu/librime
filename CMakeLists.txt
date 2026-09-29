@@ -59,11 +59,16 @@ set(YamlCpp_STATIC ${BUILD_STATIC})
 
 set(Boost_USE_MULTITHREADED ON)
 if(MSVC)
-  set(Boost_USE_STATIC_RUNTIME ON)
+  # [celerling patch 0001] vcpkg x64-windows-static-md: static libs + dynamic CRT (/MD)
+  set(Boost_USE_STATIC_LIBS ON)
+  set(Boost_USE_STATIC_RUNTIME OFF)
 endif()
 
 if(LINUX)
   find_package(Boost 1.74.0 REQUIRED COMPONENTS regex)
+elseif(WIN32)
+  # [celerling patch 0001] link boost::regex explicitly on Windows
+  find_package(Boost 1.77.0 REQUIRED COMPONENTS regex)
 else()
   find_package(Boost 1.77.0)
 endif()
